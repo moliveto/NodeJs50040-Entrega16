@@ -13,7 +13,7 @@ const createProduct = async (req, res) => {
 
 const getProduct = async (req, res) => {
     const prodId = req.params.uid;
-    const product = await productsService.getUserById(prodId);
+    const product = await productsService.getProductById(prodId);
     if (!product) return res.status(404).send({ status: "error", error: "product not found" })
     res.send({ status: "success", payload: product })
 }

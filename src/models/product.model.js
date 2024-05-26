@@ -8,6 +8,10 @@ const schema = new mongoose.Schema({
   quantity: { type: Number, required: true },
   thumbnail: { type: String, default: 'Sin imagen' },
   status: { type: Boolean, default: true },
+  owner: {
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'users'
+  }
 });
 
 schema.plugin(mongoosePaginate);
