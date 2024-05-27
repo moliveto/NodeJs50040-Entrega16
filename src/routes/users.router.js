@@ -153,4 +153,6 @@ router.delete('/:uid', usersController.deleteUser);
 
 router.post("/resetpassword", usersController.forgotPassword)
 
+router.post("/updatepassword/:token", usersController.updatePassword)
+
 export default router;

@@ -70,11 +70,35 @@ const forgotPassword = async (req, res) => {
     });
 }
 
+const updatePassword = async (req, res) => {
+    const resetLink = req.params.token
+    const { newPassword } = req.body;
+    if (resetLink) {
+        jsonwebtoken.verify(resetLink, JWT_SECRET, async function (error, decodedData) {
+            if (error) {
+                return res.status(401).json({
+                    error: 'El token ha expirado'
+                });
+            }
+            const user = await usersService.getUserById(decodedData._id);
+            if (!user) return res.status(404).send({ status: "error", error: "User not found" });
+            user.password = newPassword;
+            user.resetLink = '';
+            const result = await usersService.update(user._id, user);
+            return res.status(200).json({ message: 'La contraseña ha sido actualizada' });
+        });
+    } else {
+        return res.status(401).json({ error: 'Autenticación fallida' });
+    }
+}
+
+
 export default {
     deleteUser,
     createUser,
     getAllUsers,
     getUser,
     updateUser,
-    forgotPassword
+    forgotPassword,
+    updatePassword
 }

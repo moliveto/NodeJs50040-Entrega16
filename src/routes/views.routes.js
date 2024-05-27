@@ -96,4 +96,16 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.get('/forgotpassword', (req, res) => {
+  res.render('forgotpassword');
+});
+
+router.get('/updatepassword/:token', (req, res) => {
+  const token = req.params.token
+  res.render("updatepassword", {
+    title: "Practica Integradora 3 - Actualizar contraseña",
+    token: token
+  })
+})
+
 export default router;
