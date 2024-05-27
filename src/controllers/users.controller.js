@@ -1,4 +1,7 @@
 import { usersService } from "../services/index.js"
+import jsonwebtoken from "jsonwebtoken";
+import { JWT_SECRET, JWT_RESET_EXPIRE_IN, CLIENT_URL } from "../config/config.js";
+import { transporter } from "../utils/email.js"
 
 const getAllUsers = async (req, res) => {
     const users = await usersService.getAll();
@@ -29,8 +32,43 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     const userId = req.params.uid;
-    const result = await usersService.delete(userId);
+    const user = await usersService.delete(userId);
     res.send({ status: "success", message: "User deleted" })
+}
+
+const forgotPassword = async (req, res) => {
+    const { email } = req.body
+    const user = await usersService.getUserByEmail(email);
+    if (!user) return res.status(404).send({ status: "error", error: "User not found" });
+
+    let token = jsonwebtoken.sign(
+        user,
+        JWT_SECRET,
+        { expiresIn: JWT_RESET_EXPIRE_IN });
+
+    const message = {
+        to: email,
+        subject: 'Reset Account Password Link',
+        html: `
+        <h3>Por favor, ingresa al link para cambiar tu contraseña</h3>
+        <p>${CLIENT_URL}/updatePassword/${token}"</p>
+        `,
+    };
+
+    user.resetLink = token;
+
+    const result = await usersService.update(user._id, user);
+    //await usersService.setResetLink(user._id, { resetLink: token });
+
+    transporter.sendMail(message, (error, info) => {
+        if (error) {
+            console.log('Error al enviar correo:', error);
+            return res.status(400).json({ error: error.message })
+        } else {
+            console.log('Correo enviado correctamente:', info.messageId);
+            return res.status(200).json({ message: 'El correo fue enviado sigue las instrucciones' })
+        }
+    });
 }
 
 export default {
@@ -38,5 +76,6 @@ export default {
     createUser,
     getAllUsers,
     getUser,
-    updateUser
+    updateUser,
+    forgotPassword
 }

@@ -151,4 +151,6 @@ router.put('/:uid', usersController.updateUser);
  */
 router.delete('/:uid', usersController.deleteUser);
 
+router.post("/resetpassword", usersController.forgotPassword)
+
 export default router;

@@ -18,6 +18,21 @@ export default class Users {
         return userModel.findByIdAndUpdate(id, { $set: doc })
     }
 
+    setResetLink = (uid, token) => {
+        try {
+            return userModel.findByIdAndUpdate(uid, { resetLink: token })
+                .then((res) => {
+                    return res
+                })
+                .catch((err) => {
+                    throw new Error(err)
+                })
+
+        } catch (error) {
+            throw Error(error)
+        }
+    }
+
     delete = (id) => {
         return userModel.findByIdAndDelete(id);
     }

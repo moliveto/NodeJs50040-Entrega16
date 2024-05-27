@@ -7,42 +7,17 @@ import swaggerUi from 'swagger-ui-express';
 
 import usersRouter from './routes/users.router.js';
 import productsRouter from './routes/products.router.js';
+import { PORT, PERSISTENCE, MONGO_URI } from "./config/config.js";
+import { swaggerOpts } from "./config/swagger.config.js";
+
+const connection = mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const connection = mongoose.connect(`mongodb://localhost:27017/entrega16`, { useNewUrlParser: true, useUnifiedTopology: true });
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const options = {
-    definition: {
-        openapi: "3.1.0",
-        info: {
-            title: "Express API with Swagger",
-            version: "0.1.0",
-            description:
-                "This is a simple CRUD API application made with Express and documented with Swagger",
-            license: {
-                name: "MIT",
-                url: "https://spdx.org/licenses/MIT.html",
-            },
-            contact: {
-                name: "Marcelo",
-                url: "https://marcelo.com",
-                email: "info@email.com",
-            },
-        },
-        servers: [
-            {
-                url: "http://localhost:3000",
-            },
-        ],
-    },
-    apis: ["./src/routes/*.js"],
-};
-
-const specs = swaggerJsDoc(options);
+const specs = swaggerJsDoc(swaggerOpts);
 app.use(
     "/docs",
     swaggerUi.serve,
@@ -52,7 +27,7 @@ app.use(
 app.use('/api/users', usersRouter);
 app.use('/api/products', productsRouter);
 
-app.listen(PORT, () => {
+const httpServer = app.listen(PORT, () => {
     displayRoutes(app);
-    console.log(`Listening on ${PORT}`);
+    console.log(`Listening on ${PORT}, enviroment: ${process.env.NODE_ENV} persistence: ${PERSISTENCE}`);
 });

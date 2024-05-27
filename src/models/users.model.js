@@ -8,6 +8,7 @@ const roleType = {
     user: "user",
     admin: "admin",
     public: "public",
+    premium: "premium",
 };
 
 const schema = new mongoose.Schema({
@@ -48,6 +49,10 @@ const schema = new mongoose.Schema({
         enum: Object.values(roleType), // ['admin', 'public', 'user']
         default: 'user',
     },
+    resetLink: {
+        type: String,
+        default: ''
+    },
     carts: {
         type: [
             {
@@ -59,7 +64,7 @@ const schema = new mongoose.Schema({
             },
         ],
         default: [],
-    },
+    }
 },
     {
         timestamps: true, // Automatically adds timestamps for created/updated at

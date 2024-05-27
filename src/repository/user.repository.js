@@ -9,8 +9,13 @@ export default class UserRepository extends GenericRepository {
     getUserByEmail = (email) => {
         return this.getBy({ email });
     }
+
     getUserById = (id) => {
         return this.getBy({ _id: id })
+    }
+
+    setResetLink = (id, resetLink) => {
+        return this.dao.setResetLink(id, resetLink);
     }
 
 }

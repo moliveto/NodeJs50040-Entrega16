@@ -12,7 +12,10 @@ const schema = new mongoose.Schema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'users'
   }
-});
+},
+  {
+    timestamps: true, // Automatically adds timestamps for created/updated at
+  });
 
 schema.plugin(mongoosePaginate);
 const collection = "products";

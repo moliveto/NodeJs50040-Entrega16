@@ -1,12 +1,12 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
-const schema = new mongoose.Schema({
+const schema = new Schema({
     products: {
         type: [
             {
                 product: {
-                    type: mongoose.Schema.Types.ObjectId,
+                    type: Schema.Types.ObjectId,
                     ref: "products",
                     required: true
                 },
@@ -17,13 +17,16 @@ const schema = new mongoose.Schema({
         ],
         default: [],
     }
-});
+},
+    {
+        timestamps: true, // Automatically adds timestamps for created/updated at
+    });
 
 schema.pre('findOne', function () {
     this.populate('products.product')
 });
 
 const collectionName = 'carts';
-const cartModel = mongoose.model(collectionName, schema);
+const cartModel = model(collectionName, schema);
 
 export default cartModel;
