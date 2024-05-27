@@ -2,6 +2,7 @@ import { usersService } from "../services/index.js"
 import jsonwebtoken from "jsonwebtoken";
 import { JWT_SECRET, JWT_RESET_EXPIRE_IN, CLIENT_URL } from "../config/config.js";
 import { transporter } from "../utils/email.js"
+import { createHashValue, isValidPasswd } from "../utils/encrypt.js";
 
 const getAllUsers = async (req, res) => {
     const users = await usersService.getAll();
@@ -82,7 +83,8 @@ const updatePassword = async (req, res) => {
             }
             const user = await usersService.getUserById(decodedData._id);
             if (!user) return res.status(404).send({ status: "error", error: "User not found" });
-            user.password = newPassword;
+            const pswHashed = await createHashValue(newPassword);
+            user.password = await pswHashed;
             user.resetLink = '';
             const result = await usersService.update(user._id, user);
             return res.status(200).json({ message: 'La contraseña ha sido actualizada' });

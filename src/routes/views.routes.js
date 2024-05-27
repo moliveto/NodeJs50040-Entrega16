@@ -73,7 +73,6 @@ router.post("/register", async (req, res) => {
   try {
     const { first_name, last_name, email, age, password, role } = req.body;
 
-    // TODO: Validar todos los campos del body
     const newUser = await userModel.create({
       first_name,
       last_name,
