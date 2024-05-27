@@ -1,0 +1,18 @@
+<h1>Profile</h1>
+
+{{#if user}}
+<div>
+  <p>Welcome, {{user.first_name}}, {{user.last_name}}!</p>
+  <p>Email: {{user.email}}</p>
+  <p>Age: {{user.age}}</p>
+  <p>Role: {{user.role}}</p>
+</div>
+<div>
+  <form action="logout" method="get">
+    <br />
+    <button type="submit">logout</button>
+  </form>
+</div>
+{{else}}
+<p>You are not logged in.</p>
+{{/if}}
