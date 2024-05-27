@@ -58,7 +58,6 @@ const forgotPassword = async (req, res) => {
     user.resetLink = token;
 
     const result = await usersService.update(user._id, user);
-    //await usersService.setResetLink(user._id, { resetLink: token });
 
     transporter.sendMail(message, (error, info) => {
         if (error) {
