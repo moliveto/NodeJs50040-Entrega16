@@ -4,6 +4,9 @@ import { isValidPasswd } from "../utils/encrypt.js";
 import userModel from "../models/users.model.js";
 import { generateJWT } from "../utils/jwt.js";
 
+import ProductsModel from "../models/product.model.js"
+import CartModel from '../models/carts.model.js';
+
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -106,5 +109,62 @@ router.get('/updatepassword/:token', (req, res) => {
     token: token
   })
 })
+
+
+// vista de productos en handlebars con boton comprar
+router.get("/products", async (req, res) => {
+  const { page = 1, limit = 10, sort, filter } = req.query
+  try {
+
+    const sortTogle = (sort) => {
+      let srt = parseInt(sort)
+      console.log(srt)
+      console.log(sort)
+      if (sort === undefined) return 1
+      else { return srt *= -1 }
+    }
+
+    const sorting = sortTogle(sort)
+
+    const response = await ProductsModel.paginate({ filter }, { limit: limit, page: page, sort: { price: sorting } })
+
+    if (page > response.totalPages) {
+      return res.json({ status: "failed", message: "LA PAGINA SELECCIONADA NO EXISTE" })
+    }
+
+    const cart = await CartModel.create({})
+
+    //Convierto la query de mongo a un objeto javascript plano para que lo pueda leer Handlebars
+    const products = response.docs.map(doc => {
+      return {
+        id: doc._id,
+        cart: cart._id,
+        title: doc.title,
+        description: doc.description,
+        category: doc.category,
+        thumbnail: doc.thumbnail,
+        price: doc.price,
+        stock: doc.stock,
+        code: doc.code
+      }
+    })
+
+    //paso el objeto plano al view de handlebars
+    res.render("products", {
+      title: "Practica Integradora 3",
+      docs: products,
+      page: response.page,
+      sort: sorting,
+      nextPage: response.nextPage,
+      prevPage: response.prevPage,
+      totalPages: response.totalPages,
+      hasPrevPage: response.hasPrevPage,
+      hasNextPage: response.hasNextPage,
+    })
+
+  } catch (error) {
+    return res.json({ status: "failed", error: error.message })
+  }
+});
 
 export default router;

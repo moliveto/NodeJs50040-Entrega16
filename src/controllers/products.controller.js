@@ -33,10 +33,16 @@ const deleteProduct = async (req, res) => {
     res.send({ status: "success", message: "product deleted" })
 }
 
+const insertManyProducts = async (req, res) => {
+    const result = await productsService.insertMany();
+    res.send({ status: "success", message: "products inserted" })
+}
+
 export default {
     getAllProducts,
     createProduct,
     getProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    insertManyProducts
 }

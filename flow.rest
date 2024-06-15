@@ -75,3 +75,4 @@ GET {{url}}/api/products/
 @firstProductId = {{products.response.body.payload.0._id}}
 ###
 
+GET {{url}}/api/products/insertion

@@ -169,5 +169,7 @@ router.post('/', productsController.createProduct);
 router.get('/:uid', productsController.getProduct);
 router.put('/:uid', productsController.updateProduct);
 router.delete('/:uid', productsController.deleteProduct);
+router.get('/insertion', productsController.insertManyProducts);
+
 
 export default router;
